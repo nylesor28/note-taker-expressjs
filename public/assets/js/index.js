@@ -26,6 +26,7 @@ const hide = elem => {
 let activeNote = {};
 
 const getNotes = () =>
+// console.log("Inside GET NOTE")
   fetch('/api/notes', {
     method: 'GET',
     headers: {
@@ -52,6 +53,7 @@ const deleteNote = id =>
 
 const renderActiveNote = () => {
   hide(saveNoteBtn);
+  console.log("Inside RENDER ACTIVE NOTE")
 
   if (activeNote.id) {
     noteTitle.setAttribute('readonly', true);
@@ -65,6 +67,9 @@ const renderActiveNote = () => {
     noteText.value = '';
   }
 };
+
+// Gets notes from the db and renders them to the sidebar
+const getAndRenderNotes = () => getNotes().then(renderNoteList);
 
 const handleNoteSave = () => {
   const newNote = {
@@ -90,6 +95,7 @@ const handleNoteDelete = e => {
   }
 
   deleteNote(noteId).then(() => {
+    console.log("Inside DELETE NOTE")
     getAndRenderNotes();
     renderActiveNote();
   });
@@ -170,8 +176,7 @@ const renderNoteList = async notes => {
   }
 };
 
-// Gets notes from the db and renders them to the sidebar
-const getAndRenderNotes = () => getNotes().then(renderNoteList);
+
 
 if (window.location.pathname === '/notes') {
   saveNoteBtn.addEventListener('click', handleNoteSave);

@@ -13,25 +13,22 @@ app.use(express.json());
 app.use(express.static("public"));
 
 
-saveNotes =(arr)=>{
 
+saveNotes =(arr)=>{
   fs.writeFileSync(path.join(__dirname, "db/db.json"), JSON.stringify(arr));
 }
-
 
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public/index.html"));
 });
-+
+
 app.get("/notes", (req, res) => {
   res.sendFile(path.join(__dirname, "public/notes.html"));
 });
 
 app.get("/api/notes", (req, res) => {
- let newArr = fs.readFileSync(path.join(__dirname, "db/db.json"));
-console.log(notesObjArr)
+
   res.json(notesObjArr);
- // res.json(JSON.parse(notesObjArr));
 });
 
 app.post("/api/notes", function (req, res) {
@@ -41,19 +38,21 @@ app.post("/api/notes", function (req, res) {
   notesObjArr.push(req.body);
 
   saveNotes(notesObjArr);
-
-  console.log(notesObjArr);
-  res.json(req.body);
+  res.status(200).json("Save Completed Successfully")
 });
 
 app.delete("/api/notes/:id", (req, res) => {
-  console.log(req.params);
+
   const inputID = req.params.id; 
 
-  const filteredArr = notesObjArr.filter(notes=> notes.id !== inputID);
-  console.log(filteredArr);
-  saveNotes(filteredArr)
-  res.status(200).send("Successful")
+  for(let i = 0; i<notesObjArr.length; i++){
+    if (notesObjArr[i].id===inputID){
+      notesObjArr.splice(i,1)
+      break;
+    }
+  }
+  saveNotes(notesObjArr)
+  res.status(200).json("Delete Completed Successfully")
 
 });
 
